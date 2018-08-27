@@ -28,11 +28,12 @@ Partial Class frm_PhotoOrbit
         Me.pic_01 = New System.Windows.Forms.PictureBox()
         Me.oSplitContainer_01 = New System.Windows.Forms.SplitContainer()
         Me.oSplitContainer_Left = New System.Windows.Forms.SplitContainer()
+        Me.Panel1 = New System.Windows.Forms.Panel()
         Me.btn_Folder_Videos = New System.Windows.Forms.Button()
-        Me.btn_Folder_Pictures = New System.Windows.Forms.Button()
-        Me.Label4 = New System.Windows.Forms.Label()
-        Me.btn_Up = New System.Windows.Forms.Button()
         Me.btn_Now = New System.Windows.Forms.Button()
+        Me.btn_Folder_Pictures = New System.Windows.Forms.Button()
+        Me.btn_Up = New System.Windows.Forms.Button()
+        Me.Label4 = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.oListView_Files = New System.Windows.Forms.ListView()
         Me.column_FileName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -51,6 +52,9 @@ Partial Class frm_PhotoOrbit
         Me.textbox_Info = New System.Windows.Forms.RichTextBox()
         Me.oListView_Info = New System.Windows.Forms.ListView()
         Me.Num = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.Category = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.Size = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.Duration = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Country = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.State = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.County = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -58,6 +62,7 @@ Partial Class frm_PhotoOrbit
         Me.Descr = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.textbox_PathedFileName_Display = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
+        Me.mplayer_01 = New AxWMPLib.AxWindowsMediaPlayer()
         Me.m_cmdbtn_GatherSubFolderFiles = New System.Windows.Forms.Button()
         Me.lbl_textbox_TextToCopy_01 = New System.Windows.Forms.Label()
         Me.textbox_TextToCopy_01 = New System.Windows.Forms.TextBox()
@@ -123,7 +128,6 @@ Partial Class frm_PhotoOrbit
         Me.oToolTip_01 = New System.Windows.Forms.ToolTip(Me.components)
         Me.btn_Map = New System.Windows.Forms.Button()
         Me.btn_NewVideoProject = New System.Windows.Forms.Button()
-        Me.mplayer_01 = New AxWMPLib.AxWindowsMediaPlayer()
         CType(Me.pic_01, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.oSplitContainer_01, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.oSplitContainer_01.Panel1.SuspendLayout()
@@ -133,6 +137,7 @@ Partial Class frm_PhotoOrbit
         Me.oSplitContainer_Left.Panel1.SuspendLayout()
         Me.oSplitContainer_Left.Panel2.SuspendLayout()
         Me.oSplitContainer_Left.SuspendLayout()
+        Me.Panel1.SuspendLayout()
         CType(Me.oSplitContainer_Right, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.oSplitContainer_Right.Panel1.SuspendLayout()
         Me.oSplitContainer_Right.Panel2.SuspendLayout()
@@ -142,6 +147,7 @@ Partial Class frm_PhotoOrbit
         Me.oSplitContainer_Info.Panel2.SuspendLayout()
         Me.oSplitContainer_Info.SuspendLayout()
         Me.oPanel_Info.SuspendLayout()
+        CType(Me.mplayer_01, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.oSplitContainer_Main, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.oSplitContainer_Main.Panel1.SuspendLayout()
         Me.oSplitContainer_Main.Panel2.SuspendLayout()
@@ -152,7 +158,6 @@ Partial Class frm_PhotoOrbit
         Me.oTabPage_Snippets.SuspendLayout()
         Me.oTabPage_SearchResults.SuspendLayout()
         Me.oTabPage_Keys.SuspendLayout()
-        CType(Me.mplayer_01, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'btn_Enumerate
@@ -191,7 +196,7 @@ Partial Class frm_PhotoOrbit
         Me.oDirListBox_01.IntegralHeight = False
         Me.oDirListBox_01.Location = New System.Drawing.Point(0, 31)
         Me.oDirListBox_01.Name = "oDirListBox_01"
-        Me.oDirListBox_01.Size = New System.Drawing.Size(185, 248)
+        Me.oDirListBox_01.Size = New System.Drawing.Size(185, 247)
         Me.oDirListBox_01.TabIndex = 6
         '
         'pic_01
@@ -232,11 +237,8 @@ Partial Class frm_PhotoOrbit
         '
         'oSplitContainer_Left.Panel1
         '
-        Me.oSplitContainer_Left.Panel1.Controls.Add(Me.btn_Folder_Videos)
-        Me.oSplitContainer_Left.Panel1.Controls.Add(Me.btn_Folder_Pictures)
+        Me.oSplitContainer_Left.Panel1.Controls.Add(Me.Panel1)
         Me.oSplitContainer_Left.Panel1.Controls.Add(Me.Label4)
-        Me.oSplitContainer_Left.Panel1.Controls.Add(Me.btn_Up)
-        Me.oSplitContainer_Left.Panel1.Controls.Add(Me.btn_Now)
         Me.oSplitContainer_Left.Panel1.Controls.Add(Me.oDirListBox_01)
         '
         'oSplitContainer_Left.Panel2
@@ -248,11 +250,21 @@ Partial Class frm_PhotoOrbit
         Me.oSplitContainer_Left.SplitterDistance = 186
         Me.oSplitContainer_Left.TabIndex = 0
         '
+        'Panel1
+        '
+        Me.Panel1.Controls.Add(Me.btn_Folder_Videos)
+        Me.Panel1.Controls.Add(Me.btn_Now)
+        Me.Panel1.Controls.Add(Me.btn_Folder_Pictures)
+        Me.Panel1.Controls.Add(Me.btn_Up)
+        Me.Panel1.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.Panel1.Location = New System.Drawing.Point(0, 281)
+        Me.Panel1.Name = "Panel1"
+        Me.Panel1.Size = New System.Drawing.Size(186, 60)
+        Me.Panel1.TabIndex = 19
+        '
         'btn_Folder_Videos
         '
-        Me.btn_Folder_Videos.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btn_Folder_Videos.Location = New System.Drawing.Point(83, 285)
+        Me.btn_Folder_Videos.Location = New System.Drawing.Point(83, 3)
         Me.btn_Folder_Videos.Name = "btn_Folder_Videos"
         Me.btn_Folder_Videos.Size = New System.Drawing.Size(103, 25)
         Me.btn_Folder_Videos.TabIndex = 18
@@ -260,17 +272,40 @@ Partial Class frm_PhotoOrbit
         Me.oToolTip_01.SetToolTip(Me.btn_Folder_Videos, "Go to the MyVideos folder")
         Me.btn_Folder_Videos.UseVisualStyleBackColor = True
         '
+        'btn_Now
+        '
+        Me.btn_Now.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btn_Now.Location = New System.Drawing.Point(60, 32)
+        Me.btn_Now.Name = "btn_Now"
+        Me.btn_Now.Size = New System.Drawing.Size(126, 25)
+        Me.btn_Now.TabIndex = 7
+        Me.btn_Now.Text = "This Month"
+        Me.oToolTip_01.SetToolTip(Me.btn_Now, "Go to this month's folder")
+        Me.btn_Now.UseVisualStyleBackColor = True
+        '
         'btn_Folder_Pictures
         '
-        Me.btn_Folder_Pictures.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.btn_Folder_Pictures.Font = New System.Drawing.Font("Segoe UI", 8.25!)
-        Me.btn_Folder_Pictures.Location = New System.Drawing.Point(0, 285)
+        Me.btn_Folder_Pictures.Location = New System.Drawing.Point(0, 3)
         Me.btn_Folder_Pictures.Name = "btn_Folder_Pictures"
         Me.btn_Folder_Pictures.Size = New System.Drawing.Size(77, 25)
         Me.btn_Folder_Pictures.TabIndex = 17
         Me.btn_Folder_Pictures.Text = "Pictures"
         Me.oToolTip_01.SetToolTip(Me.btn_Folder_Pictures, "Go to the MyPictures folder")
         Me.btn_Folder_Pictures.UseVisualStyleBackColor = True
+        '
+        'btn_Up
+        '
+        Me.btn_Up.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btn_Up.Font = New System.Drawing.Font("Wingdings", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(2, Byte))
+        Me.btn_Up.Location = New System.Drawing.Point(0, 32)
+        Me.btn_Up.Name = "btn_Up"
+        Me.btn_Up.Size = New System.Drawing.Size(53, 25)
+        Me.btn_Up.TabIndex = 8
+        Me.btn_Up.Text = "ã"
+        Me.oToolTip_01.SetToolTip(Me.btn_Up, "Go up one folder")
+        Me.btn_Up.UseVisualStyleBackColor = True
         '
         'Label4
         '
@@ -281,30 +316,6 @@ Partial Class frm_PhotoOrbit
         Me.Label4.Size = New System.Drawing.Size(186, 21)
         Me.Label4.TabIndex = 16
         Me.Label4.Text = "Folder Section:"
-        '
-        'btn_Up
-        '
-        Me.btn_Up.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btn_Up.Font = New System.Drawing.Font("Wingdings", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(2, Byte))
-        Me.btn_Up.Location = New System.Drawing.Point(0, 316)
-        Me.btn_Up.Name = "btn_Up"
-        Me.btn_Up.Size = New System.Drawing.Size(53, 25)
-        Me.btn_Up.TabIndex = 8
-        Me.btn_Up.Text = "ã"
-        Me.oToolTip_01.SetToolTip(Me.btn_Up, "Go up one folder")
-        Me.btn_Up.UseVisualStyleBackColor = True
-        '
-        'btn_Now
-        '
-        Me.btn_Now.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btn_Now.Location = New System.Drawing.Point(60, 316)
-        Me.btn_Now.Name = "btn_Now"
-        Me.btn_Now.Size = New System.Drawing.Size(126, 25)
-        Me.btn_Now.TabIndex = 7
-        Me.btn_Now.Text = "This Month"
-        Me.oToolTip_01.SetToolTip(Me.btn_Now, "Go to this month's folder")
-        Me.btn_Now.UseVisualStyleBackColor = True
         '
         'Label3
         '
@@ -497,7 +508,7 @@ Partial Class frm_PhotoOrbit
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.oListView_Info.BackColor = System.Drawing.SystemColors.Window
-        Me.oListView_Info.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Num, Me.Country, Me.State, Me.County, Me.City, Me.Descr})
+        Me.oListView_Info.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Num, Me.Category, Me.Size, Me.Duration, Me.Country, Me.State, Me.County, Me.City, Me.Descr})
         Me.oListView_Info.FullRowSelect = True
         Me.oListView_Info.GridLines = True
         Me.oListView_Info.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
@@ -512,6 +523,18 @@ Partial Class frm_PhotoOrbit
         'Num
         '
         Me.Num.Text = "#"
+        '
+        'Category
+        '
+        Me.Category.Text = "Category"
+        '
+        'Size
+        '
+        Me.Size.Text = "Size"
+        '
+        'Duration
+        '
+        Me.Duration.Text = "Duration"
         '
         'Country
         '
@@ -555,6 +578,18 @@ Partial Class frm_PhotoOrbit
         Me.Label1.Size = New System.Drawing.Size(360, 21)
         Me.Label1.TabIndex = 11
         Me.Label1.Text = "Display Section:"
+        '
+        'mplayer_01
+        '
+        Me.mplayer_01.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.mplayer_01.Enabled = True
+        Me.mplayer_01.Location = New System.Drawing.Point(1, 57)
+        Me.mplayer_01.Name = "mplayer_01"
+        Me.mplayer_01.OcxState = CType(resources.GetObject("mplayer_01.OcxState"), System.Windows.Forms.AxHost.State)
+        Me.mplayer_01.Size = New System.Drawing.Size(360, 286)
+        Me.mplayer_01.TabIndex = 10
         '
         'm_cmdbtn_GatherSubFolderFiles
         '
@@ -1238,18 +1273,6 @@ Partial Class frm_PhotoOrbit
         Me.btn_NewVideoProject.Text = "New Video Project"
         Me.btn_NewVideoProject.UseVisualStyleBackColor = True
         '
-        'mplayer_01
-        '
-        Me.mplayer_01.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.mplayer_01.Enabled = True
-        Me.mplayer_01.Location = New System.Drawing.Point(1, 57)
-        Me.mplayer_01.Name = "mplayer_01"
-        Me.mplayer_01.OcxState = CType(resources.GetObject("mplayer_01.OcxState"), System.Windows.Forms.AxHost.State)
-        Me.mplayer_01.Size = New System.Drawing.Size(360, 286)
-        Me.mplayer_01.TabIndex = 10
-        '
         'frm_PhotoOrbit
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -1281,6 +1304,7 @@ Partial Class frm_PhotoOrbit
         Me.oSplitContainer_Left.Panel2.ResumeLayout(False)
         CType(Me.oSplitContainer_Left, System.ComponentModel.ISupportInitialize).EndInit()
         Me.oSplitContainer_Left.ResumeLayout(False)
+        Me.Panel1.ResumeLayout(False)
         Me.oSplitContainer_Right.Panel1.ResumeLayout(False)
         Me.oSplitContainer_Right.Panel2.ResumeLayout(False)
         Me.oSplitContainer_Right.Panel2.PerformLayout()
@@ -1292,6 +1316,7 @@ Partial Class frm_PhotoOrbit
         CType(Me.oSplitContainer_Info, System.ComponentModel.ISupportInitialize).EndInit()
         Me.oSplitContainer_Info.ResumeLayout(False)
         Me.oPanel_Info.ResumeLayout(False)
+        CType(Me.mplayer_01, System.ComponentModel.ISupportInitialize).EndInit()
         Me.oSplitContainer_Main.Panel1.ResumeLayout(False)
         Me.oSplitContainer_Main.Panel2.ResumeLayout(False)
         CType(Me.oSplitContainer_Main, System.ComponentModel.ISupportInitialize).EndInit()
@@ -1303,7 +1328,6 @@ Partial Class frm_PhotoOrbit
         Me.oTabPage_Snippets.PerformLayout()
         Me.oTabPage_SearchResults.ResumeLayout(False)
         Me.oTabPage_Keys.ResumeLayout(False)
-        CType(Me.mplayer_01, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -1410,4 +1434,8 @@ Partial Class frm_PhotoOrbit
     Friend WithEvents ColumnHeader2 As ColumnHeader
     Friend WithEvents column_Number As ColumnHeader
     Friend WithEvents column_Duration As ColumnHeader
+    Friend WithEvents Panel1 As Panel
+    Friend WithEvents Category As ColumnHeader
+    Friend WithEvents Size As ColumnHeader
+    Friend WithEvents Duration As ColumnHeader
 End Class

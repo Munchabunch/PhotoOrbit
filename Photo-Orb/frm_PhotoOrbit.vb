@@ -1762,6 +1762,22 @@ Public Class frm_PhotoOrbit
 
     End Sub
 
+    Private Sub oSplitContainer_Left_SplitterMoving(sender As Object, e As SplitterCancelEventArgs) Handles oSplitContainer_Left.SplitterMoving
+
+        '// &&&& //
+
+        '// WORKING //
+        'ResizeUniformly_Horizontal({btn_Folder_Pictures, btn_Folder_Videos}, oSplitContainer_Left.Panel1.Width)
+
+    End Sub
+
+    Private Sub oSplitContainer_Left_SplitterMoved(sender As Object, e As SplitterEventArgs) Handles oSplitContainer_Left.SplitterMoved
+
+        '// WORKING //
+        ResizeUniformly_Horizontal({btn_Folder_Pictures, btn_Folder_Videos}, oSplitContainer_Left.Panel1.Width)
+
+    End Sub
+
 #End Region
 
 
@@ -2162,10 +2178,13 @@ Public Class frm_PhotoOrbit
     ''' </summary>
     Private Sub FillInfoListView()
 
+        Dim PathedFileName_01 As String
         Dim FileName_Pic As String
-        Dim FileName_PicFound As String
+        Dim FileName_Found As String
         Dim FileTitle_Pic As String
         Dim str_PicNum As String
+        Dim oFileInfo_01 As FileInfo
+
         Dim Country As String
         Dim StateAbbr As String
         Dim CountyAbbr As String
@@ -2180,6 +2199,9 @@ Public Class frm_PhotoOrbit
         Dim Pos As Integer
         Dim lvi As ListViewItem
 
+
+        Dim oShell As Shell32.Shell = CType(CreateObject("Shell.Application"), Shell32.Shell)
+        Dim oFolder As Shell32.Folder = CType(oShell.NameSpace(m_Path_Displayed), Shell32.Folder)
 
         oListView_Info.Items.Clear()
 
@@ -2210,16 +2232,48 @@ Public Class frm_PhotoOrbit
                         str_PicNum = Strings.Left(str_LineRemaining, 3)
                         str_LineRemaining = str_LineRemaining.Substring(4)
 
-                        FileName_PicFound = ""
+                        FileName_Found = ""
                         For Each lvi In oListView_Files.Items
                             FileName_Pic = lvi.Text
                             FileTitle_Pic = RemoveFileExtension(FileName_Pic)
                             If (FileTitle_Pic = str_PicNum) Then
-                                FileName_PicFound = FileName_Pic
+                                FileName_Found = FileName_Pic
                             End If
                         Next
 
-                        lvi = New ListViewItem(FileName_PicFound)
+                        PathedFileName_01 = NormalizePath(m_Path_Displayed) + FileName_Found
+
+                        oFileInfo_01 = New FileInfo(PathedFileName_01)
+                        Dim sizeInBytes As Long = oFileInfo_01.Length
+
+                        lvi = New ListViewItem(FileName_Found)
+
+                        Select Case (LCase(FileExtension(FileName_Found)))
+
+                            Case "bmp", "gif", "jpg", "jpeg", "png"
+                                lvi.SubItems.Add("Picture")
+                                lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
+                                lvi.ForeColor = Color.DarkRed
+
+                            Case "wav", "mid", "midi", "mp3"
+                                lvi.SubItems.Add("Audio")
+                                lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
+                                lvi.SubItems.Add(oFolder.GetDetailsOf(oFolder.ParseName(FileName_Found), 27)) '// (duration)
+                                lvi.ForeColor = Color.DarkBlue
+
+                            Case "mov", "avi", "mpg", "mpeg", "mp4", "wmv"
+                                lvi.SubItems.Add("Video")
+                                lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
+                                lvi.SubItems.Add(oFolder.GetDetailsOf(oFolder.ParseName(FileName_Found), 27)) '// (duration)
+                                lvi.ForeColor = Color.DarkGreen
+
+                            Case Else
+                                lvi.SubItems.Add("other")
+                                lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
+                                lvi.ForeColor = Color.DimGray
+
+                        End Select
+
                         lvi.SubItems.Add("USA")
 
                         Dim match_02 As Match = Regex.Match(str_LineRemaining, "^[A-Z][A-Z] ` +")
@@ -2277,10 +2331,41 @@ Public Class frm_PhotoOrbit
 
                         If (Pos > 0) Then
 
-                            FileName_Pic = str_LineRemaining.Substring(0, Pos - 1).Trim()
+                            FileName_Found = str_LineRemaining.Substring(0, Pos - 1).Trim()
                             str_LineRemaining = str_LineRemaining.Substring(Pos)
 
-                            lvi = New ListViewItem(FileName_Pic)
+                            PathedFileName_01 = NormalizePath(m_Path_Displayed) + FileName_Found
+
+                            oFileInfo_01 = New FileInfo(PathedFileName_01)
+                            Dim sizeInBytes As Long = oFileInfo_01.Length
+
+                            lvi = New ListViewItem(FileName_Found)
+
+                            Select Case (LCase(FileExtension(FileName_Found)))
+
+                                Case "bmp", "gif", "jpg", "jpeg", "png"
+                                    lvi.SubItems.Add("Picture")
+                                    lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
+                                    lvi.ForeColor = Color.DarkRed
+
+                                Case "wav", "mid", "midi", "mp3"
+                                    lvi.SubItems.Add("Audio")
+                                    lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
+                                    lvi.SubItems.Add(oFolder.GetDetailsOf(oFolder.ParseName(FileName_Found), 27)) '// (duration)
+                                    lvi.ForeColor = Color.DarkBlue
+
+                                Case "mov", "avi", "mpg", "mpeg", "mp4", "wmv"
+                                    lvi.SubItems.Add("Video")
+                                    lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
+                                    lvi.SubItems.Add(oFolder.GetDetailsOf(oFolder.ParseName(FileName_Found), 27)) '// (duration)
+                                    lvi.ForeColor = Color.DarkGreen
+
+                                Case Else
+                                    lvi.SubItems.Add("other")
+                                    lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
+                                    lvi.ForeColor = Color.DimGray
+
+                            End Select
 
                             Pos = InStr(str_LineRemaining, "`")
 
