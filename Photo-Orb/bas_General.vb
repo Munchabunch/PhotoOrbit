@@ -2,17 +2,14 @@ Imports System.IO.File
 
 Module bas_General
 
+    ''' <summary>
+    ''' Make a backup copy of a file.
+    ''' </summary>
+    ''' <param name="str_PathedFileName_Orig"></param>
+    ''' <remarks></remarks>
     Public Sub BackupFile(ByVal str_PathedFileName_Orig As String)
 
         '-----------------------------------------------------------------------------------------------------
-        ' Make a backup copy of a file.
-        '-----------------------------------------------------------------------------------------------------
-        '
-        ' Required parameters:
-        '   str_PathedFileName_Orig
-        '
-        ' Optional parameters:
-        '   none
         '
         ' Exceptions:
         '   If backup file #999 exists, we will not make any more backups.
@@ -22,87 +19,38 @@ Module bas_General
         '      number.  For example, the first backup of "Names.txt" will be called "Names.txt.bak.001",
         '      and the second will be called "Names.txt.bak.002".
         '
-        ' Credits:
-        '   Original code by Mike Adams
-        '
-        ' Author:    Mike Adams
-        ' Date:      2004-02-12
-        '
-        ' Status:    Tested
-        '
         '-----------------------------------------------------------------------------------------------------
 
         Dim str_PathedFileName_Backup As String
-        Dim i_BackupNo As Long
-        Dim str_BackupNo As String
+        Dim i_BackupNum As Long
+        Dim str_BackupNum As String
 
 
         '// Find the backup file name:
-        i_BackupNo = 999
-        str_BackupNo = Format(i_BackupNo, "000")
-        str_PathedFileName_Backup = str_PathedFileName_Orig + ".bak." + str_BackupNo
+        i_BackupNum = 999
+        str_BackupNum = Format(i_BackupNum, "000")
+        str_PathedFileName_Backup = str_PathedFileName_Orig + ".bak." + str_BackupNum
 
         '// If "~~~.bak.999" exists, then we will not back up the file.
         If Exists(str_PathedFileName_Backup) Then Exit Sub
 
-        Do Until i_BackupNo = 0 Or Exists(str_PathedFileName_Backup)
+        Do Until i_BackupNum = 0 Or Exists(str_PathedFileName_Backup)
 
             '// Find the next backup file name:
-            i_BackupNo = i_BackupNo - 1
-            str_BackupNo = Format(i_BackupNo, "000")
-            str_PathedFileName_Backup = str_PathedFileName_Orig + ".bak." + str_BackupNo
+            i_BackupNum = i_BackupNum - 1
+            str_BackupNum = Format(i_BackupNum, "000")
+            str_PathedFileName_Backup = str_PathedFileName_Orig + ".bak." + str_BackupNum
 
         Loop
 
         '// Find the backup file name:
-        i_BackupNo = i_BackupNo + 1
-        str_BackupNo = Format(i_BackupNo, "000")
-        str_PathedFileName_Backup = str_PathedFileName_Orig + ".bak." + str_BackupNo
+        i_BackupNum = i_BackupNum + 1
+        str_BackupNum = Format(i_BackupNum, "000")
+        str_PathedFileName_Backup = str_PathedFileName_Orig + ".bak." + str_BackupNum
 
         FileCopy(str_PathedFileName_Orig, str_PathedFileName_Backup)
 
-
     End Sub
-
-    Public Function NormalizePath(ByVal str_FilePath As String) As String
-
-        '-----------------------------------------------------------------------------------------------------
-        ' Make sure that a string has a trailing backslash.
-        '-----------------------------------------------------------------------------------------------------
-        '
-        ' Returns string:
-        '   path to a subdirectory ending with "\"
-        '
-        ' Required parameters:
-        '   str_FilePath
-        '     path to a subdirectory
-        '
-        ' Optional parameters:
-        '   none
-        '
-        ' Notes:
-        '
-        ' See also:
-        '
-        ' Credits:
-        '
-        ' Author:    Mike Adams
-        ' Date:      2007-07-18
-        '
-        ' Status:    Tested
-        '
-        '-----------------------------------------------------------------------------------------------------
-
-
-        If (Len(str_FilePath) > 0) Then
-            If (str_FilePath.EndsWith("\")) Then
-                NormalizePath = str_FilePath
-            Else
-                NormalizePath = (str_FilePath + "\")
-            End If
-        End If
-
-    End Function
 
     ''' <summary>
     ''' Return a file's text contents.
@@ -134,50 +82,48 @@ Module bas_General
 
     End Sub
 
-    Public Function RemoveFileExtension(ByVal str_FileName As String) As String
+    ''' <summary>
+    ''' Determine whether the specified file has a graphic-file extension.
+    ''' </summary>
+    ''' <param name="FileName">file name, with or without a path</param>
+    ''' <returns></returns>
+    Public Function IsGraphicFile(FileName) As Boolean
 
-        '-----------------------------------------------------------------------------------------------------
-        ' Remove the extension from a file name.
-        '-----------------------------------------------------------------------------------------------------
-        '
-        ' Returns string:
-        '   If the unpathed file name contains a ".":
-        '     Every character before the last "."
-        '   If the unpathed file name DOES NOT contain a ".":
-        '     The entire file name as input
-        '
-        ' Required parameters:
-        '   str_FileName
-        '     un-pathed name of the file
-        '
-        ' Optional parameters:
-        '   none
-        '
-        ' Notes:
-        '   The extension is not limited to three characters; it may be any length.
-        '
-        ' Credits:
-        '   Original code by Mike Adams
-        '
-        ' Author:    Mike Adams
-        ' Date:      2009-03-22
-        '
-        ' Status:    Converting
-        '
-        '-----------------------------------------------------------------------------------------------------
+        Dim Extension As String
 
-        Dim i_Pos As Long
+        Extension = FileExtension(FileName)
 
-
-        '// Find the position of the last "." in the un-pathed file name.
-        i_Pos = InStrRev(str_FileName, ".")
-
-        If (i_Pos = 0) Then
-            RemoveFileExtension = str_FileName
+        If (Extension = "bmp" _
+                Or Extension = "gif" _
+                Or Extension = "png" _
+                Or Extension = "jpg" _
+                Or Extension = "jpeg") Then
+            IsGraphicFile = True
         Else
-            RemoveFileExtension = Mid$(str_FileName, 1, i_Pos - 1)
+            IsGraphicFile = False
         End If
 
+    End Function
+
+    ''' <summary>
+    ''' Determine whether the specified file has a video-file extension.
+    ''' </summary>
+    ''' <param name="FileName">file name, with or without a path</param>
+    ''' <returns></returns>
+    Public Function IsVideoFile(FileName) As Boolean
+
+        Dim Extension As String
+
+        Extension = FileExtension(FileName)
+
+        If (Extension = "avi" _
+                Or Extension = "mpeg" _
+                Or Extension = "mp4" _
+                Or Extension = "mov") Then
+            IsVideoFile = True
+        Else
+            IsVideoFile = False
+        End If
 
     End Function
 

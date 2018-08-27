@@ -51,6 +51,7 @@
     <OutputPath>bin\Release\</OutputPath>
     <DocumentationFile>Photo-Orbit.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic.Compatibility" />
@@ -77,10 +78,41 @@
   <ItemGroup>
     <Compile Include="bas_DirObjNames.vb" />
     <Compile Include="bas_General.vb" />
+    <Compile Include="dlg_FindInfo.Designer.vb">
+      <DependentUpon>dlg_FindInfo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlg_FindInfo.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlg_Replace.Designer.vb">
+      <DependentUpon>dlg_Replace.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlg_Replace.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlg_TextString.Designer.vb">
+      <DependentUpon>dlg_TextString.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlg_TextString.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ExifWorks.vb" />
     <Compile Include="frm_PhotoOrbit.Designer.vb">
       <DependentUpon>frm_PhotoOrbit.vb</DependentUpon>
     </Compile>
     <Compile Include="frm_PhotoOrbit.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frm_TextBlock.Designer.vb">
+      <DependentUpon>frm_TextBlock.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frm_TextBlock.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frm_WebBrowser.Designer.vb">
+      <DependentUpon>frm_WebBrowser.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frm_WebBrowser.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -100,9 +132,24 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="dlg_FindInfo.resx">
+      <DependentUpon>dlg_FindInfo.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlg_Replace.resx">
+      <DependentUpon>dlg_Replace.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlg_TextString.resx">
+      <DependentUpon>dlg_TextString.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frm_PhotoOrbit.resx">
       <SubType>Designer</SubType>
       <DependentUpon>frm_PhotoOrbit.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frm_TextBlock.resx">
+      <DependentUpon>frm_TextBlock.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frm_WebBrowser.resx">
+      <DependentUpon>frm_WebBrowser.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
@@ -162,6 +209,15 @@
       <Lcid>0</Lcid>
       <WrapperTool>aximp</WrapperTool>
       <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="Shell32">
+      <Guid>{50A7E9B0-70EF-11D1-B75A-00A0C90564FE}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
     <COMReference Include="WMPLib">
       <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>

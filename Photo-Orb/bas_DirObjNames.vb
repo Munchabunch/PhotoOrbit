@@ -57,18 +57,14 @@ Module bas_DirObjNames
             '
             ' Notes:
             '
-            ' Credits:
-            '   Original code by Mike Adams
-            '
             '-----------------------------------------------------------------------------------------------------
 
-            'position of the last "\" in the pathed file name
-            Dim i_Pos As Long
+            Dim Pos As Integer
 
             '// Find the position of the last "\" in the pathed file name.
-            i_Pos = InStrRev(str_PathedFileName, "\")
+            Pos = InStrRev(str_PathedFileName, "\")
 
-            FileName = str_PathedFileName.Substring(i_Pos + 1)
+            FileName = str_PathedFileName.Substring(Pos)
 
         End Get
 
@@ -174,14 +170,11 @@ Module bas_DirObjNames
         '
         ' Notes:
         '
-        ' Credits:
-        '   Original code by Tony Rabun
-        '
         '-----------------------------------------------------------------------------------------------------
 
         Get
 
-            Dim i_Pos As Long
+            Dim Pos As Integer
             Dim str_FileName As String
 
             On Error GoTo EH
@@ -191,8 +184,8 @@ Module bas_DirObjNames
             If (Len(str_FileName) = 0) Then
                 Path = ""
             Else
-                i_Pos = InStr(str_PathedFileName, str_FileName)
-                Path = str_PathedFileName.Substring(1, i_Pos - 1)
+                Pos = InStr(str_PathedFileName, str_FileName)
+                Path = str_PathedFileName.Substring(0, Pos - 1)
             End If
 
             Exit Property
@@ -214,5 +207,64 @@ EH:
         End Set
 
     End Property
+
+    ''' <summary>
+    ''' Make sure that a string ends with a backslash.
+    ''' </summary>
+    ''' <param name="Path">path to a subdirectory</param>
+    ''' <returns>path to a subdirectory ending with "\"</returns>
+    Public Function NormalizePath(ByVal Path As String) As String
+
+        If (Len(Path) > 0) Then
+            If (Path.EndsWith("\")) Then
+                Return Path
+            Else
+                Return Path + "\"
+            End If
+        End If
+
+        Return ""
+
+    End Function
+
+    ''' <summary>
+    ''' Determine the path to the parent of a specified folder.
+    ''' </summary>
+    ''' <param name="Path_Orig"></param>
+    ''' <returns></returns>
+    Public Function GetParentPath(Path_Orig As String) As String
+
+        Dim NPath_Orig As String = NormalizePath(Path_Orig)
+
+        If (NPath_Orig.Length < 3) Then
+            Return NPath_Orig
+        Else
+            Dim i_Pos As Integer = NPath_Orig.LastIndexOf("\", NPath_Orig.Length - 2)
+            Return NPath_Orig.Substring(0, i_Pos) + "\"
+        End If
+
+    End Function
+
+    ''' <summary>
+    ''' Remove the extension from a file name.
+    ''' </summary>
+    ''' <param name="str_FileName">un-pathed name of the file</param>
+    ''' <returns>Every character before the last ".", if any</returns>
+    ''' <credits>Original code by Mike Adams</credits>
+    Public Function RemoveFileExtension(ByVal str_FileName As String) As String
+
+        Dim i_Pos As Long
+
+
+        '// Find the position of the last "." in the un-pathed file name.
+        i_Pos = InStrRev(str_FileName, ".")
+
+        If (i_Pos = 0) Then
+            RemoveFileExtension = str_FileName
+        Else
+            RemoveFileExtension = Mid$(str_FileName, 1, i_Pos - 1)
+        End If
+
+    End Function
 
 End Module
