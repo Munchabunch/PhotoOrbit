@@ -509,6 +509,7 @@ Partial Class frm_PhotoOrbit
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.oListView_Info.BackColor = System.Drawing.SystemColors.Window
         Me.oListView_Info.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Num, Me.Category, Me.Size, Me.Duration, Me.Country, Me.State, Me.County, Me.City, Me.Descr})
+        Me.oListView_Info.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.oListView_Info.FullRowSelect = True
         Me.oListView_Info.GridLines = True
         Me.oListView_Info.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable

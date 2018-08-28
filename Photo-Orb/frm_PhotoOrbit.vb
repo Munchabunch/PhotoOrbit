@@ -1703,11 +1703,6 @@ Public Class frm_PhotoOrbit
     Private Sub oListView_Info_SelectedIndexChanged(sender As Object, e As EventArgs) Handles oListView_Info.SelectedIndexChanged
 
         Dim PathedFileName_ToDisplay As String
-        Dim FileTitle As String
-        Dim FileExtension_ToDisplay As String
-        Dim PicNum_Selected As Integer
-        Dim PicNum As Integer
-        Dim FileNum As Integer
         Dim lvi As ListViewItem
 
         Dim InfoFileVersion As Integer = textbox_Version.Text
@@ -1718,41 +1713,14 @@ Public Class frm_PhotoOrbit
             lvi.BackColor = SystemColors.Window
         Next lvi
 
-        Select Case InfoFileVersion
-
-            Case 1
-
-                If (oListView_Info.SelectedItems.Count > 0) Then
-                    If (IsNumeric(oListView_Info.SelectedItems(0).Text)) Then
-                        PicNum_Selected = oListView_Info.SelectedItems(0).Text
-                        For FileNum = 0 To oListView_Files.Items.Count - 1
-                            FileTitle = RemoveFileExtension(oListView_Files.Items(FileNum).Text)
-                            If (IsNumeric(FileTitle)) Then
-                                PicNum = FileTitle
-                                If (PicNum = PicNum_Selected) Then
-                                    FileExtension_ToDisplay = FileExtension(oListView_Files.Items(FileNum).Text)
-                                    PathedFileName_ToDisplay = NormalizePath(m_Path_Displayed) + FileTitle + "." + FileExtension_ToDisplay
-                                    textbox_PathedFileName_Display.Text = PathedFileName_ToDisplay
-                                    DisplayFile()
-                                    HighlightDisplayedFile()
-                                End If
-                            End If
-                        Next FileNum
-                    End If
-                End If
-
-            Case 2
-
-                If (oListView_Info.SelectedItems.Count > 0) Then
-                    PathedFileName_ToDisplay = NormalizePath(m_Path_Displayed) + oListView_Info.SelectedItems(0).Text
-                    If (Exists(PathedFileName_ToDisplay)) Then
-                        textbox_PathedFileName_Display.Text = PathedFileName_ToDisplay
-                        DisplayFile()
-                        HighlightDisplayedFile()
-                    End If
-                End If
-
-        End Select
+        If (oListView_Info.SelectedItems.Count > 0) Then
+            PathedFileName_ToDisplay = NormalizePath(m_Path_Displayed) + oListView_Info.SelectedItems(0).Text
+            If (Exists(PathedFileName_ToDisplay)) Then
+                textbox_PathedFileName_Display.Text = PathedFileName_ToDisplay
+                DisplayFile()
+                HighlightDisplayedFile()
+            End If
+        End If
 
     End Sub
 
@@ -2179,6 +2147,7 @@ Public Class frm_PhotoOrbit
     Private Sub FillInfoListView()
 
         Dim PathedFileName_01 As String
+        Dim FileName_FileInFolder As String
         Dim FileName_Pic As String
         Dim FileName_Found As String
         Dim FileTitle_Pic As String
@@ -2253,6 +2222,7 @@ Public Class frm_PhotoOrbit
                             Case "bmp", "gif", "jpg", "jpeg", "png"
                                 lvi.SubItems.Add("Picture")
                                 lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
+                                lvi.SubItems.Add("")
                                 lvi.ForeColor = Color.DarkRed
 
                             Case "wav", "mid", "midi", "mp3"
@@ -2270,6 +2240,7 @@ Public Class frm_PhotoOrbit
                             Case Else
                                 lvi.SubItems.Add("other")
                                 lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
+                                lvi.SubItems.Add("")
                                 lvi.ForeColor = Color.DimGray
 
                         End Select
@@ -2319,11 +2290,46 @@ Public Class frm_PhotoOrbit
 
             Case 2
 
-                For i_LineNum = 2 To textbox_Info.Lines.Length - 2
+                For Each PathedFileName_01 In My.Computer.FileSystem.GetFiles(m_Path_Displayed)
 
-                    str_Line = textbox_Info.Lines(i_LineNum)
+                    FileName_FileInFolder = FileName(PathedFileName_01)
 
-                    If (str_Line.Length > 0) Then
+                    lvi = New ListViewItem(FileName_FileInFolder)
+
+                    oFileInfo_01 = New FileInfo(PathedFileName_01)
+                    Dim sizeInBytes As Long = oFileInfo_01.Length
+
+                    Select Case (LCase(FileExtension(FileName_FileInFolder)))
+
+                        Case "bmp", "gif", "jpg", "jpeg", "png"
+                            lvi.SubItems.Add("Picture")
+                            lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
+                            lvi.SubItems.Add("")
+                            lvi.ForeColor = Color.DarkRed
+
+                        Case "wav", "mid", "midi", "mp3"
+                            lvi.SubItems.Add("Audio")
+                            lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
+                            lvi.SubItems.Add(oFolder.GetDetailsOf(oFolder.ParseName(FileName_FileInFolder), 27)) '// (duration)
+                            lvi.ForeColor = Color.DarkBlue
+
+                        Case "mov", "avi", "mpg", "mpeg", "mp4", "wmv"
+                            lvi.SubItems.Add("Video")
+                            lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
+                            lvi.SubItems.Add(oFolder.GetDetailsOf(oFolder.ParseName(FileName_FileInFolder), 27)) '// (duration)
+                            lvi.ForeColor = Color.DarkGreen
+
+                        Case Else
+                            lvi.SubItems.Add("other")
+                            lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
+                            lvi.SubItems.Add("")
+                            lvi.ForeColor = Color.DimGray
+
+                    End Select
+
+                    For i_LineNum = 2 To textbox_Info.Lines.Length - 2
+
+                        str_Line = textbox_Info.Lines(i_LineNum)
 
                         str_LineRemaining = str_Line
 
@@ -2334,78 +2340,49 @@ Public Class frm_PhotoOrbit
                             FileName_Found = str_LineRemaining.Substring(0, Pos - 1).Trim()
                             str_LineRemaining = str_LineRemaining.Substring(Pos)
 
-                            PathedFileName_01 = NormalizePath(m_Path_Displayed) + FileName_Found
-
-                            oFileInfo_01 = New FileInfo(PathedFileName_01)
-                            Dim sizeInBytes As Long = oFileInfo_01.Length
-
-                            lvi = New ListViewItem(FileName_Found)
-
-                            Select Case (LCase(FileExtension(FileName_Found)))
-
-                                Case "bmp", "gif", "jpg", "jpeg", "png"
-                                    lvi.SubItems.Add("Picture")
-                                    lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
-                                    lvi.ForeColor = Color.DarkRed
-
-                                Case "wav", "mid", "midi", "mp3"
-                                    lvi.SubItems.Add("Audio")
-                                    lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
-                                    lvi.SubItems.Add(oFolder.GetDetailsOf(oFolder.ParseName(FileName_Found), 27)) '// (duration)
-                                    lvi.ForeColor = Color.DarkBlue
-
-                                Case "mov", "avi", "mpg", "mpeg", "mp4", "wmv"
-                                    lvi.SubItems.Add("Video")
-                                    lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
-                                    lvi.SubItems.Add(oFolder.GetDetailsOf(oFolder.ParseName(FileName_Found), 27)) '// (duration)
-                                    lvi.ForeColor = Color.DarkGreen
-
-                                Case Else
-                                    lvi.SubItems.Add("other")
-                                    lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
-                                    lvi.ForeColor = Color.DimGray
-
-                            End Select
-
-                            Pos = InStr(str_LineRemaining, "`")
-
-                            If (Pos > 0) Then '// If we found a country abbreviation ...
-
-                                Country = str_LineRemaining.Substring(0, Pos - 1).Trim()
-                                str_LineRemaining = str_LineRemaining.Substring(Pos)
-
-                                lvi.SubItems.Add(Country)
+                            If (FileName_Found = FileName_FileInFolder) Then
 
                                 Pos = InStr(str_LineRemaining, "`")
 
-                                If (Pos > 0) Then '// If we found a state abbreviation ...
+                                If (Pos > 0) Then '// If we found a country abbreviation ...
 
-                                    StateAbbr = str_LineRemaining.Substring(0, Pos - 1).Trim()
+                                    Country = str_LineRemaining.Substring(0, Pos - 1).Trim()
                                     str_LineRemaining = str_LineRemaining.Substring(Pos)
 
-                                    lvi.SubItems.Add(StateAbbr)
+                                    lvi.SubItems.Add(Country)
 
                                     Pos = InStr(str_LineRemaining, "`")
 
-                                    If (Pos > 0) Then '// If we found a county abbreviation ...
+                                    If (Pos > 0) Then '// If we found a state abbreviation ...
 
-                                        CountyAbbr = str_LineRemaining.Substring(0, Pos - 1).Trim()
+                                        StateAbbr = str_LineRemaining.Substring(0, Pos - 1).Trim()
                                         str_LineRemaining = str_LineRemaining.Substring(Pos)
 
-                                        lvi.SubItems.Add(CountyAbbr)
+                                        lvi.SubItems.Add(StateAbbr)
 
                                         Pos = InStr(str_LineRemaining, "`")
 
-                                        If (Pos > 0) Then '// If we found a city name ...
+                                        If (Pos > 0) Then '// If we found a county abbreviation ...
 
-                                            City = str_LineRemaining.Substring(0, Pos - 1).Trim()
+                                            CountyAbbr = str_LineRemaining.Substring(0, Pos - 1).Trim()
                                             str_LineRemaining = str_LineRemaining.Substring(Pos)
 
-                                            lvi.SubItems.Add(City)
+                                            lvi.SubItems.Add(CountyAbbr)
 
-                                            Descr = str_LineRemaining.Trim()
+                                            Pos = InStr(str_LineRemaining, "`")
 
-                                            lvi.SubItems.Add(Descr)
+                                            If (Pos > 0) Then '// If we found a city name ...
+
+                                                City = str_LineRemaining.Substring(0, Pos - 1).Trim()
+                                                str_LineRemaining = str_LineRemaining.Substring(Pos)
+
+                                                lvi.SubItems.Add(City)
+
+                                                Descr = str_LineRemaining.Trim()
+
+                                                lvi.SubItems.Add(Descr)
+
+                                            End If
 
                                         End If
 
@@ -2415,13 +2392,13 @@ Public Class frm_PhotoOrbit
 
                             End If
 
-                            oListView_Info.Items.Add(lvi)
-
                         End If
 
-                    End If
+                    Next i_LineNum
 
-                Next i_LineNum
+                    oListView_Info.Items.Add(lvi)
+
+                Next PathedFileName_01
 
                 btn_ConvertInfoFile.Enabled = False
 
@@ -2522,7 +2499,7 @@ Public Class frm_PhotoOrbit
         str_Info_New += "[02]" + vbLf
 
         For Each lvi In oListView_Info.Items
-            Line_New = lvi.Text + "`" + lvi.SubItems(1).Text + "`" + lvi.SubItems(2).Text + "`" + lvi.SubItems(3).Text + "`" + lvi.SubItems(4).Text + "`" + lvi.SubItems(5).Text
+            Line_New = lvi.Text + "`" + lvi.SubItems(4).Text + "`" + lvi.SubItems(5).Text + "`" + lvi.SubItems(6).Text + "`" + lvi.SubItems(7).Text + "`" + lvi.SubItems(8).Text
             str_Info_New += Line_New + vbLf
         Next
 
