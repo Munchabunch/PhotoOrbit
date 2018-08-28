@@ -2196,6 +2196,7 @@ Public Class frm_PhotoOrbit
                     str_LineRemaining = Regex.Replace(str_Line, " ?\[.*?\]", "")
 
                     Dim match As Match = Regex.Match(str_LineRemaining, "^\d\d\d +")
+
                     If match.Success Then
 
                         str_PicNum = Strings.Left(str_LineRemaining, 3)
@@ -2210,78 +2211,82 @@ Public Class frm_PhotoOrbit
                             End If
                         Next
 
-                        PathedFileName_01 = NormalizePath(m_Path_Displayed) + FileName_Found
+                        If (FileName_Found.Length > 0) Then
 
-                        oFileInfo_01 = New FileInfo(PathedFileName_01)
-                        Dim sizeInBytes As Long = oFileInfo_01.Length
+                            PathedFileName_01 = NormalizePath(m_Path_Displayed) + FileName_Found
 
-                        lvi = New ListViewItem(FileName_Found)
+                            oFileInfo_01 = New FileInfo(PathedFileName_01)
+                            Dim sizeInBytes As Long = oFileInfo_01.Length
 
-                        Select Case (LCase(FileExtension(FileName_Found)))
+                            lvi = New ListViewItem(FileName_Found)
 
-                            Case "bmp", "gif", "jpg", "jpeg", "png"
-                                lvi.SubItems.Add("Picture")
-                                lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
+                            Select Case (LCase(FileExtension(FileName_Found)))
+
+                                Case "bmp", "gif", "jpg", "jpeg", "png"
+                                    lvi.SubItems.Add("Picture")
+                                    lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
+                                    lvi.SubItems.Add("")
+                                    lvi.ForeColor = Color.DarkRed
+
+                                Case "wav", "mid", "midi", "mp3"
+                                    lvi.SubItems.Add("Audio")
+                                    lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
+                                    lvi.SubItems.Add(oFolder.GetDetailsOf(oFolder.ParseName(FileName_Found), 27)) '// (duration)
+                                    lvi.ForeColor = Color.DarkBlue
+
+                                Case "mov", "avi", "mpg", "mpeg", "mp4", "wmv"
+                                    lvi.SubItems.Add("Video")
+                                    lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
+                                    lvi.SubItems.Add(oFolder.GetDetailsOf(oFolder.ParseName(FileName_Found), 27)) '// (duration)
+                                    lvi.ForeColor = Color.DarkGreen
+
+                                Case Else
+                                    lvi.SubItems.Add("other")
+                                    lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
+                                    lvi.SubItems.Add("")
+                                    lvi.ForeColor = Color.DimGray
+
+                            End Select
+
+                            lvi.SubItems.Add("USA")
+
+                            Dim match_02 As Match = Regex.Match(str_LineRemaining, "^[A-Z][A-Z] ` +")
+                            StateAbbr = ""
+                            If match_02.Success Then '// If we found a state abbreviation ...
+                                StateAbbr = str_LineRemaining.Substring(0, 2)
+                                lvi.SubItems.Add(StateAbbr)
+                                str_LineRemaining = str_LineRemaining.Substring(5)
+                            Else '// If we found NO state abbreviation ...
                                 lvi.SubItems.Add("")
-                                lvi.ForeColor = Color.DarkRed
+                            End If
 
-                            Case "wav", "mid", "midi", "mp3"
-                                lvi.SubItems.Add("Audio")
-                                lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
-                                lvi.SubItems.Add(oFolder.GetDetailsOf(oFolder.ParseName(FileName_Found), 27)) '// (duration)
-                                lvi.ForeColor = Color.DarkBlue
-
-                            Case "mov", "avi", "mpg", "mpeg", "mp4", "wmv"
-                                lvi.SubItems.Add("Video")
-                                lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
-                                lvi.SubItems.Add(oFolder.GetDetailsOf(oFolder.ParseName(FileName_Found), 27)) '// (duration)
-                                lvi.ForeColor = Color.DarkGreen
-
-                            Case Else
-                                lvi.SubItems.Add("other")
-                                lvi.SubItems.Add(sizeInBytes.ToString("###,###,###,###,###"))
+                            Dim match_03 As Match = Regex.Match(str_LineRemaining, "^[A-Z][A-Z][A-Z] ` +")
+                            If match_03.Success Then '// If we found a county abbreviation ...
+                                CountyAbbr = str_LineRemaining.Substring(0, 3)
+                                lvi.SubItems.Add(CountyAbbr)
+                                str_LineRemaining = str_LineRemaining.Substring(6)
+                            Else '// If we found NO county abbreviation ...
                                 lvi.SubItems.Add("")
-                                lvi.ForeColor = Color.DimGray
+                            End If
 
-                        End Select
+                            Pos = InStr(str_LineRemaining, "`")
+                            If (StateAbbr = "DC") Then
+                                City = "Washington"
+                                lvi.SubItems.Add(City)
+                            ElseIf (Pos > 0) Then '// If we found a city name ...
+                                City = str_LineRemaining.Substring(0, Pos - 2)
+                                lvi.SubItems.Add(City)
+                                str_LineRemaining = str_LineRemaining.Substring(Pos + 1)
+                            Else '// If we found NO city name ...
+                                lvi.SubItems.Add("")
+                            End If
 
-                        lvi.SubItems.Add("USA")
+                            Descr = str_LineRemaining
+                            lvi.SubItems.Add(Descr)
 
-                        Dim match_02 As Match = Regex.Match(str_LineRemaining, "^[A-Z][A-Z] ` +")
-                        StateAbbr = ""
-                        If match_02.Success Then '// If we found a state abbreviation ...
-                            StateAbbr = str_LineRemaining.Substring(0, 2)
-                            lvi.SubItems.Add(StateAbbr)
-                            str_LineRemaining = str_LineRemaining.Substring(5)
-                        Else '// If we found NO state abbreviation ...
-                            lvi.SubItems.Add("")
+                            oListView_Info.Items.Add(lvi)
                         End If
 
-                        Dim match_03 As Match = Regex.Match(str_LineRemaining, "^[A-Z][A-Z][A-Z] ` +")
-                        If match_03.Success Then '// If we found a county abbreviation ...
-                            CountyAbbr = str_LineRemaining.Substring(0, 3)
-                            lvi.SubItems.Add(CountyAbbr)
-                            str_LineRemaining = str_LineRemaining.Substring(6)
-                        Else '// If we found NO county abbreviation ...
-                            lvi.SubItems.Add("")
-                        End If
-
-                        Pos = InStr(str_LineRemaining, "`")
-                        If (StateAbbr = "DC") Then
-                            City = "Washington"
-                            lvi.SubItems.Add(City)
-                        ElseIf (Pos > 0) Then '// If we found a city name ...
-                            City = str_LineRemaining.Substring(0, Pos - 2)
-                            lvi.SubItems.Add(City)
-                            str_LineRemaining = str_LineRemaining.Substring(Pos + 1)
-                        Else '// If we found NO city name ...
-                            lvi.SubItems.Add("")
-                        End If
-
-                        Descr = str_LineRemaining
-                        lvi.SubItems.Add(Descr)
-
-                        oListView_Info.Items.Add(lvi)
                     End If
 
                 Next i_LineNum
