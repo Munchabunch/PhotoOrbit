@@ -1,0 +1,54 @@
+
+Search Packages.
+
+
+
+
+FileVent:
+
+Display the playlist while playing it.
+
+Add Contributing Artists.
+
+
+
+
+
+Hold:
+
+On the Package tab, let the user set the default font & background.
+
+The Copy by Date button handles video files differently, because they have no exif data.
+
+Create methods FolderContainsStillPictures and FolderContainsVideos.
+
+Look into using NVorbis (https://github.com/NVorbis/NVorbis) for playing ogg files.
+
+
+
+
+
+Done:
+
+Disable snippets when no info.txt file exists (or create a new file).
+
+Pictures in 3 states do not show the "+" sign in info.txt files, such as D:\Pictures\2001\11-10 Sat\info.txt.
+
+The Copy By Date button should copy into the By Date folder.
+
+Include a Rating column, even if there's no info.txt file.
+
+Rename frm_SearchRatings to frm_SearchProperties
+
+Copy the info to the Package tab correctly.
+
+On the Search tab, selecting a row does not work properly when it has a + sign.
+
+SaveInfoFile on the FileVent control duplicates UpdatePicInfoFile on the main form.
+
+Mapping functions are not working properly.
+
+random picture
+
+Add a "Save Info File" button.
+
