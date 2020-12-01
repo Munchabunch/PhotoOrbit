@@ -1,0 +1,7 @@
+Note that some file formats, such as a MP3 file, only support a single genre. Others, such as a .wma files, support multiple genres. If you specify multiple genres for a single-genre file format, only the first genre in the list will be recognized.
+
+MP3 format supports a single genre, but it supports multiple contributing artists.
+
+For MP3 files, the "Authors" (#20) and "Contributing artists" (#13) properties will be the same.
+
+I haven't found a way to change the Publisher property.
